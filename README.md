@@ -1,2 +1,12 @@
 # klahvimine-react
-Mäng eestikeelsete sõnade võimalikult kiireks äratrükkimiseks
+React UI for typing game for Estonian language
+
+Development
+```
+npm run dev
+```
+
+Build
+```
+npm run build
+```

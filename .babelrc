@@ -1,0 +1,33 @@
+{
+  "presets": [
+    "es2015",
+    "react"
+  ],
+  "plugins": [
+    [
+      "babel-plugin-module-alias",
+      [
+        {
+          "src": "./src/components",
+          "expose": "components"
+        },
+        {
+          "src": "./src/media",
+          "expose": "media"
+        },
+        {
+          "src": "./src/utils",
+          "expose": "utils"
+        },
+        {
+          "src": "./src/containers",
+          "expose": "containers"
+        },
+        {
+          "src": "./src/common",
+          "expose": "common"
+        }
+      ]
+    ]
+  ]
+}
