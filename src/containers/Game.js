@@ -19,25 +19,41 @@ class Game extends React.Component {
 
   componentDidMount() {
     socket = io('http://localhost:3000')
-    socket.on('giveNewWordSuccess', this.giveNewWordSuccess.bind(this))
+    socket.on('gameCreated', this.gameCreated.bind(this))
+    socket.on('gameEnded', this.gameEnded.bind(this))
     socket.on('giveNewWordFail', this.giveNewWordFail.bind(this))
+    socket.on('giveNewWordSuccess', this.giveNewWordSuccess.bind(this))
+    socket.on('updateWord', this.updateWord.bind(this))
+    socket.on('wrongGuess', this.wrongGuess.bind(this))
 
     window.addEventListener('keypress', this.keyPressed)
 
-    this.giveNewWord()
+    this.startGame()
   }
 
   componentWillUnmount() {
     socket.disconnect()
+    this.removeListener()
+  }
+
+  //Local functions
+
+  removeListener() {
     window.removeEventListener('keypress', this.keyPressed)
+  }
+
+  gameCreated() {
+    console.log('new game started, ready?')
+    this.giveNewWord()
+  }
+
+  gameEnded() {
+    console.log('game ended')
+    this.removeListener()
   }
 
   giveNewWord() {
     socket.emit('giveNewWord', { message: 'placeholder' })
-  }
-
-  giveNewWordSuccess(data) {
-    this.setState({ word: data })
   }
 
   giveNewWordFail(err) {
@@ -45,22 +61,24 @@ class Game extends React.Component {
     alert('failed to get new word')
   }
 
+  giveNewWordSuccess(data) {
+    this.setState({ word: data })
+  }
+
   keyPressed(e) {
-    let correctGuess =
-      this.state.word.charAt(0) === String.fromCharCode(e.which)
+    socket.emit('letter', String.fromCharCode(e.which))
+  }
 
-    if (!correctGuess) {
-      console.log('wrong guess')
-      throw new Error('wrong guess')
-    }
+  startGame() {
+    socket.emit('startGame')
+  }
 
-    let trimmedWord = this.state.word.slice(1)
-    if (trimmedWord.length === 0) {
-      this.giveNewWord()
-      return
-    }
+  updateWord(word) {
+    this.setState({ word: word })
+  }
 
-    this.setState({ word: trimmedWord })
+  wrongGuess() {
+    console.log('wrong guess')
   }
 
   render() {
