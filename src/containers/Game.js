@@ -27,7 +27,7 @@ class Game extends React.Component {
     socket.on('word:update', this.wordUpdate.bind(this))
     socket.on('word:wrongGuess', this.wordWrongGuess.bind(this))
 
-    socket.on('error', this.onError.bind(this))
+    socket.on('game:error', this.gameError.bind(this))
 
     window.addEventListener('keypress', this.keyPressed)
 
@@ -39,7 +39,7 @@ class Game extends React.Component {
     this.removeListener()
   }
 
-  onError(err) {
+  gameError(err) {
     switch (err.type) {
     case 'newWord':
       console.warn(err)
