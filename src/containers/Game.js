@@ -19,12 +19,15 @@ class Game extends React.Component {
 
   componentDidMount() {
     socket = io('http://localhost:3000')
-    socket.on('gameCreated', this.gameCreated.bind(this))
-    socket.on('gameEnded', this.gameEnded.bind(this))
-    socket.on('giveNewWordFail', this.giveNewWordFail.bind(this))
-    socket.on('giveNewWordSuccess', this.giveNewWordSuccess.bind(this))
-    socket.on('updateWord', this.updateWord.bind(this))
-    socket.on('wrongGuess', this.wrongGuess.bind(this))
+
+    socket.on('game:created', this.gameCreated.bind(this))
+    socket.on('game:ended', this.gameEnded.bind(this))
+
+    socket.on('word:recieve', this.wordRecieve.bind(this))
+    socket.on('word:update', this.wordUpdate.bind(this))
+    socket.on('word:wrongGuess', this.wordWrongGuess.bind(this))
+
+    socket.on('error', this.onError.bind(this))
 
     window.addEventListener('keypress', this.keyPressed)
 
@@ -36,6 +39,17 @@ class Game extends React.Component {
     this.removeListener()
   }
 
+  onError(err) {
+    switch (err.type) {
+    case 'newWord':
+      console.warn(err)
+      alert('failed to get new word')
+      break
+    default:
+      console.warn(err)
+    }
+  }
+
   //Local functions
 
   removeListener() {
@@ -44,7 +58,7 @@ class Game extends React.Component {
 
   gameCreated() {
     console.log('new game started, ready?')
-    this.giveNewWord()
+    this.newWord()
   }
 
   gameEnded() {
@@ -52,33 +66,28 @@ class Game extends React.Component {
     this.removeListener()
   }
 
-  giveNewWord() {
-    socket.emit('giveNewWord', { message: 'placeholder' })
+  newWord() {
+    socket.emit('word:new')
   }
 
-  giveNewWordFail(err) {
-    console.log(err)
-    alert('failed to get new word')
-  }
-
-  giveNewWordSuccess(data) {
-    this.setState({ word: data })
-  }
-
-  keyPressed(e) {
-    socket.emit('letter', String.fromCharCode(e.which))
-  }
-
-  startGame() {
-    socket.emit('startGame')
-  }
-
-  updateWord(word) {
+  wordRecieve(word) {
     this.setState({ word: word })
   }
 
-  wrongGuess() {
-    console.log('wrong guess')
+  keyPressed(e) {
+    socket.emit('word:letter', String.fromCharCode(e.which))
+  }
+
+  startGame() {
+    socket.emit('game:start')
+  }
+
+  wordUpdate(word) {
+    this.setState({ word: word })
+  }
+
+  wordWrongGuess() {
+    console.warn('wrong guess')
   }
 
   render() {
