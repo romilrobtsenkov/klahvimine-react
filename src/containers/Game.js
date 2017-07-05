@@ -43,7 +43,6 @@ class Game extends React.Component {
     switch (err.type) {
     case 'newWord':
       console.warn(err)
-      alert('failed to get new word')
       break
     default:
       console.warn(err)
@@ -51,10 +50,6 @@ class Game extends React.Component {
   }
 
   //Local functions
-
-  removeListener() {
-    window.removeEventListener('keypress', this.keyPressed)
-  }
 
   gameCreated() {
     console.log('new game started, ready?')
@@ -66,20 +61,24 @@ class Game extends React.Component {
     this.removeListener()
   }
 
-  newWord() {
-    socket.emit('word:new')
-  }
-
-  wordRecieve(word) {
-    this.setState({ word: word })
-  }
-
   keyPressed(e) {
     socket.emit('word:letter', String.fromCharCode(e.which))
   }
 
+  newWord() {
+    socket.emit('word:new')
+  }
+
+  removeListener() {
+    window.removeEventListener('keypress', this.keyPressed)
+  }
+
   startGame() {
     socket.emit('game:start')
+  }
+
+  wordRecieve(word) {
+    this.setState({ word: word })
   }
 
   wordUpdate(word) {
