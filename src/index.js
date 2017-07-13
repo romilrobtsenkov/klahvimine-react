@@ -1,18 +1,15 @@
 import React from 'react'
 import { render } from 'react-dom'
+import { Provider } from 'react-redux'
 
-import './stylesheets/main.scss'
+import store from 'store/configureStore'
 
-import Routes from './Routes'
-import Header from 'components/Header/Header'
+import App from 'containers/App/App'
+import './stylesheets/index.scss'
 
-const Root = () => {
-  return (
-    <div className="button">
-      <Header />
-      <Routes />
-    </div>
-  )
-}
-
-render(<Root />, document.querySelector('#main'))
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.querySelector('#main')
+)

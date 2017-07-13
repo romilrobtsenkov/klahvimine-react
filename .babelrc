@@ -1,8 +1,5 @@
 {
-  "presets": [
-    "es2015",
-    "react"
-  ],
+  "presets": ["es2015", "react", "stage-0"],
   "plugins": [
     [
       "babel-plugin-module-alias",
@@ -22,6 +19,22 @@
         {
           "src": "./src/containers",
           "expose": "containers"
+        },
+        {
+          "src": "./src/reducers",
+          "expose": "reducers"
+        },
+        {
+          "src": "./src/store",
+          "expose": "store"
+        },
+        {
+          "src": "./src/actions",
+          "expose": "actions"
+        },
+        {
+          "src": "./src/constants",
+          "expose": "constants"
         },
         {
           "src": "./src/common",

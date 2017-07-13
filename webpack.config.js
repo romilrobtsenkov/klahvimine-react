@@ -4,8 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
 
-const BUILD_DIR = path.resolve(__dirname, 'dist')
-const SRC_DIR = path.resolve(__dirname, 'src')
+const BUILD_DIR = path.resolve(__dirname, './dist')
+const SRC_DIR = path.resolve(__dirname, './src')
 
 const PRODUCTION = process.env.NODE_ENV === 'production'
 

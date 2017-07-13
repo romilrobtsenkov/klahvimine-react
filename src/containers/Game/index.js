@@ -7,6 +7,7 @@ let socket
 class Game extends React.Component {
   constructor(props) {
     super(props)
+    //console.log(props)
     this.state = { word: '' }
 
     // This binding is necessary to make `this` work in the callback
@@ -18,7 +19,18 @@ class Game extends React.Component {
   }
 
   componentDidMount() {
-    socket = io('http://localhost:3000')
+    socket = io.connect('http://localhost:3000', {
+      query: 'token=' + sessionStorage.jwtToken
+    })
+
+    socket
+      .on('connect', function() {
+        console.log('authenticated')
+      })
+      .on('disconnect', function() {
+        console.log('disconnected')
+        socket.io.reconnect()
+      })
 
     socket.on('game:created', this.gameCreated.bind(this))
     socket.on('game:ended', this.gameEnded.bind(this))
@@ -40,11 +52,13 @@ class Game extends React.Component {
   }
 
   gameError(err) {
-    switch (err.type) {
+    console.log(err)
+    switch (err.tag) {
     case 'newWord':
       console.warn(err)
       break
     default:
+      console.log('other error')
       console.warn(err)
     }
   }
@@ -62,7 +76,10 @@ class Game extends React.Component {
   }
 
   keyPressed(e) {
-    socket.emit('word:letter', String.fromCharCode(e.which))
+    socket.emit('word:letter', String.fromCharCode(e.which), (err, msg) => {
+      console.log(err)
+      console.log(msg)
+    })
   }
 
   newWord() {
