@@ -31,9 +31,10 @@ class Login extends React.Component {
   render() {
     let params = queryString.parse(this.props.location.search)
     let redirect = params.redirect || '/'
+    let { isAuthenticated } = this.props.auth
 
     //TODO no redirect after logout?
-    if (this.props.isAuthenticated) {
+    if (isAuthenticated) {
       return <Redirect to={redirect} />
     }
 
@@ -52,11 +53,6 @@ class Login extends React.Component {
     return (
       <form onSubmit={this.submit}>
         {this.props.loading && <div>Loading....</div>}
-        {this.props.user &&
-          !this.props.loading &&
-          <div>
-            <img src={this.props.user.img} />
-          </div>}
         <FormInput label="email" valueLink={emailLink} type="text" />
         <br />
         <FormInput
@@ -76,15 +72,13 @@ class Login extends React.Component {
 Login.propTypes = {
   login: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  user: PropTypes.object.isRequired,
-  isAuthenticated: PropTypes.bool.isRequired,
+  auth: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => {
   return {
-    isAuthenticated: state.auth.isAuthenticated,
-    user: state.auth.user,
+    auth: state.auth,
     loading: state.login.loading,
     from: state.from
   }

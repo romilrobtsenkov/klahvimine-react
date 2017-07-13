@@ -1,9 +1,6 @@
 const BASE_URL = '/api'
 import axios from 'axios'
 import { getToken } from 'actions/AuthActions'
-// Set config defaults when creating the instance
-
-//import { logout } from '../containers/Login/LoginActions'
 
 function makeConfig(method, url, query) {
   let config = {
@@ -42,6 +39,7 @@ export default function(method, url, query) {
     .catch(err => {
       if (err.status === 403) {
         //TODO redirect for user auth error
+        //dispatch same as logout
         console.log('not authorized')
       }
       return Promise.reject(err)

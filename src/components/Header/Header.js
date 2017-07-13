@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+
 import { connect } from 'react-redux'
 import { PropTypes } from 'prop-types'
 
@@ -9,36 +11,47 @@ import img from 'media/logo.svg'
 
 class Header extends Component {
   render() {
-    //console.log(this.state)
-    const { isAuthenticated, user } = this.props.login
-    //console.log(this.props)
-    // console.log(isAuthenticated)
-    // console.log('siin')
+    const { isAuthenticated, user } = this.props.auth
 
     return (
       <header>
         <p>Header</p>
-        <button onClick={this.props.logout}>logout</button>
         <img className="header-logo" src={img} />
-        <h2>
-          {isAuthenticated &&
+        {isAuthenticated &&
+          <div>
             <p>
-              Welcome {user.token}
-            </p>}
-        </h2>
+              Welcome {user.email}{' '}
+              <button onClick={this.props.logout}>logout</button>
+            </p>
+          </div>}
+        <br />
+
+        <Link to="/">
+          <button>Home</button>
+        </Link>
+        <Link to="/game">
+          <button>Load Game</button>
+        </Link>
+        <Link to="/scores">
+          <button>Scores</button>
+        </Link>
+        {!isAuthenticated &&
+          <Link to="/login">
+            <button>Login</button>
+          </Link>}
       </header>
     )
   }
 }
 
 Header.propTypes = {
-  login: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state) {
   return {
-    login: state.login
+    auth: state.auth
   }
 }
 

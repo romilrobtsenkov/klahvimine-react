@@ -10,7 +10,7 @@ export default class FormInput extends React.Component {
   render() {
     return (
       <label>
-        {' '}{this.props.label}
+        {this.props.label}
         <br />
         <Input {...this.props} />
         <div className="error-placeholder">

@@ -5,13 +5,12 @@ import Api from 'utils/api'
 export function logout() {
   return dispatch => {
     return Api('POST', '/auth/logout')
-      .then(data => {
-        console.log(data)
-        dispatch(removeTokenAndUser())
+      .then(() => {
+        dispatch(completeLogout())
       })
       .catch(() => {
         console.log('already logged out')
-        dispatch(removeTokenAndUser())
+        dispatch(completeLogout())
       })
   }
 }
@@ -33,5 +32,11 @@ export function login(creds) {
         console.log(err)
         dispatch({ type: types.LOGIN_FINISHED })
       })
+  }
+}
+
+function completeLogout() {
+  return dispatch => {
+    dispatch(removeTokenAndUser())
   }
 }

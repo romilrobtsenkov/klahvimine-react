@@ -2,32 +2,29 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router'
-
 import { checkUser } from 'actions/AuthActions'
-//import store from 'store/configureStore'
 
 export default function(ComposedComponent, restrict) {
   class RouteCheck extends React.Component {
     componentWillMount() {
       analytics(this.props.location.pathname)
 
-      this.props.checkUser(this.props.isAuthenticated)
+      this.props.checkUser(this.props.auth)
     }
     render() {
-      if (
-        restrict &&
-        !this.props.isAuthenticated &&
-        !this.props.authInProgress
-      ) {
+      let { isAuthenticated, authInProgress } = this.props.auth
+      let { pathname } = this.props.location
+
+      if (restrict && !isAuthenticated && !authInProgress) {
         return (
           <Redirect
             to={{
               pathname: '/login',
-              search: '?redirect=' + this.props.location.pathname
+              search: '?redirect=' + pathname
             }}
           />
         )
-      } else if (!this.props.authInProgress) {
+      } else if (!authInProgress) {
         return <ComposedComponent {...this.props} />
       } else {
         return <div>Loading...</div>
@@ -36,8 +33,7 @@ export default function(ComposedComponent, restrict) {
   }
 
   RouteCheck.propTypes = {
-    isAuthenticated: PropTypes.bool.isRequired,
-    authInProgress: PropTypes.bool.isRequired,
+    auth: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     checkUser: PropTypes.func.isRequired
   }
@@ -48,19 +44,18 @@ export default function(ComposedComponent, restrict) {
 
   function mapStateToProps(state) {
     return {
-      isAuthenticated: state.auth.isAuthenticated,
-      authInProgress: state.auth.authInProgress
+      auth: state.auth
     }
   }
 
   const mapDispatchToProps = dispatch => {
     return {
-      checkUser: isAuthenticated => dispatch(checkUser(isAuthenticated))
+      checkUser: auth => dispatch(checkUser(auth.isAuthenticated))
     }
   }
 
   function analytics(route) {
-    //console.log('ROUTE:' + route)
+    console.log('ROUTE' + route)
   }
 
   return connect(mapStateToProps, mapDispatchToProps)(RouteCheck)
