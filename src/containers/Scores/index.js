@@ -15,11 +15,26 @@ class Scores extends Component {
 
   rendergames() {
     if (this.props.games.length > 0) {
-      return this.props.games.map((game, index) =>
-        <p key={index}>
-          {' '}{game._id}{' '}
-        </p>
-      )
+      return this.props.games.map((game, index) => {
+        return (
+          <div key={index}>
+            {game._id}
+            {game.draws.map((draw, i) => {
+              return (
+                <div key={i}>
+                  <span>
+                    {draw.word.word &&
+                      <span>
+                        {draw.word.word}
+                      </span>}
+                  </span>
+                </div>
+              )
+            })}
+            <br />
+          </div>
+        )
+      })
     } else return []
   }
 
